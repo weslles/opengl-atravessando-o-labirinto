@@ -1,8 +1,8 @@
 /**
-    UNIVERSIDADE FEDERAL DO VALE DO SÃO FRANCISCO
-    DISCIPLINA: COMPUTAÇÃO GRÁFICA  TURMA: 2020.2
+    UNIVERSIDADE FEDERAL DO VALE DO SAO FRANCISCO
+    DISCIPLINA: COMPUTACAOO GRAFICA  TURMA: 2020.2
     PROFESSOR: JORGE CAVALCANTE
-    ALUNOS: JOSÉ WESLLES
+    ALUNOS: JOSE WESLLES
             MATHEUS ADHONNAY
             RAYANNE CAROLINE
 */
@@ -19,7 +19,7 @@
 #define VERDE  0.0, 0.5, 0.0, 1.0
 #define CINZA    0.5,0.5, 0.5, 1.0
 
-#define COLISAO 0.5
+#define PASSO 1.5
 
 GLfloat ro,go,bo; //RGB do quadrado
 GLfloat rl,gl,bl; //RGB das paredes do labirinto
@@ -32,6 +32,7 @@ int vidas = 3;
 int cont =0;
 
 //PAREDES DO LABIRINTO
+
 int linhas_verticais[14][3] = { {0,34,138},{0,0,17},{18,17,68},{34,85,119},{34,0,17},
                                 {51,102,138},{51,68,85},{68,34,68},{85,17,51},{102,51,119},
                                 {119,68,85},{119,34,51},{138,0,102},{138,119,138}
@@ -43,12 +44,10 @@ int linhas_horizontais[18][3] = {   {0,0,138},{17,102,138},{17,51,85},{34,0,17},
                                 };
 
 //DESENHO DA FIGURA
-/*float quad[4][2] = {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
-float quadAux[4][2] = {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};*/
-float quad[4][2] = {{2,19},{12,19},{12,29},{2, 29}};
-float quadAux[4][2] = {{2,19},{12,19},{12,29},{2,29}};
+float quad[4][2] = {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
+float quadAux[4][2] = {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
 
-void Inicializa(float , float , float );
+void Inicializa(void);
 void Desenha(void);
 bool colisaoVertical(void);
 bool colisaoHorizontal(void);
@@ -65,11 +64,11 @@ int main(int argc, char *argv[]){
     glutDisplayFunc(Desenha);
     glutSpecialFunc(TecladoEspecial);
     glutMouseFunc(Mouse);
-    Inicializa(1,1,1);
+    Inicializa();
     glutMainLoop();
 }
 
-void Inicializa (float red, float green, float blue){
+void Inicializa (void){
     glClearColor(CINZA);
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0,138,0,138);
@@ -133,7 +132,7 @@ void TecladoEspecial(int key, int x, int y){
     switch(key){
         case GLUT_KEY_UP:
             for(int i= 0; i < 4; i++)
-                quad[i][1]+=COLISAO;
+                quad[i][1]+=PASSO;
             if(colisaoHorizontal()){
                 vidas--;
                 for(int i=0;i < 4;i++)
@@ -143,7 +142,7 @@ void TecladoEspecial(int key, int x, int y){
         break;
         case GLUT_KEY_DOWN:
             for(int i= 0; i < 4; i++)
-                quad[i][1]-=COLISAO;
+                quad[i][1]-=PASSO;
             if(colisaoHorizontal()){
                 vidas--;
                 for(int i=0;i < 4;i++)
@@ -153,7 +152,7 @@ void TecladoEspecial(int key, int x, int y){
         break;
         case GLUT_KEY_LEFT:
             for(int i= 0; i < 4; i++)
-                quad[i][0]-=COLISAO;
+                quad[i][0]-=PASSO;
             if(colisaoVertical()){
                 vidas--;
                 for(int i=0;i < 4;i++)
@@ -163,7 +162,7 @@ void TecladoEspecial(int key, int x, int y){
         break;
         case GLUT_KEY_RIGHT:
             for(int i= 0; i < 4; i++)
-                quad[i][0]+=COLISAO;
+                quad[i][0]+=PASSO;
             if(colisaoVertical()){
                 vidas--;
                 for(int i=0;i < 4;i++)
@@ -175,6 +174,7 @@ void TecladoEspecial(int key, int x, int y){
     if(vidas <= 0){
         printf("Voce Perdeu!\n!");
         vidas=3;
+
     } else
         if(quad[1][1] > 102 && quad[2][1] < 119 && quad[1][0] > 138){
             printf("Voce Ganhou!!\n");
@@ -197,17 +197,17 @@ void Mouse(int button, int state,int x, int y){
     if(button == GLUT_LEFT_BUTTON){
         if(state == GLUT_DOWN){
 
-            //MUDANÇA DE COR DO OBJETO
+            //MUDANï¿½A DE COR DO OBJETO
             ro=(GLbyte)rand() % 255;
             go=(GLbyte)rand() % 255;
             bo=(GLbyte)rand() % 255;
 
-            //MUDANÇA DE COR DAS LINHAS DO LABIRINTO
+            //MUDANï¿½A DE COR DAS LINHAS DO LABIRINTO
             rl=(GLbyte)rand() % 255;
             gl=(GLbyte)rand() % 255;
             bl=(GLbyte)rand() % 255;
 
-            //MUDANÇA DE COR DO FUNDO DO LABIRINTO
+            //MUDANï¿½A DE COR DO FUNDO DO LABIRINTO
             switch (cont){
                 case 0:
                     glClearColor(AZUL);
