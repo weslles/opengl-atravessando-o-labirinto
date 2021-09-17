@@ -1,4 +1,13 @@
 # atravessando-o-labirinto-opengl
+UNIVERSIDADE FEDERAL DO VALE DO SÃO FRANCISCO
+
+    DISCIPLINA: COMPUTAÇÃO GRÁFICA  TURMA: 2020.2
+
+    PROFESSOR: JORGE CAVALCANTE
+
+    ALUNOS: JOSÉ WESLLES, MATHEUS ADHONNAY, RAYANNE CAROLINE
+
+
 1 – Crie uma aplicação OpenGL para o Jogo “Atravessando o Labirinto”,
 conforme ilustração a seguir:
 
