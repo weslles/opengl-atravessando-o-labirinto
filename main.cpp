@@ -14,25 +14,24 @@
 #include <time.h>
 
 //CORES USADAS NO FUNDO DO LABIRINTO
-#define AZUL     0.0, 0.0, 0.5, 1.0
-#define VERMELHO 0.5, 0.0, 0.0, 1.0
+#define AZUL     0.25, 0.25, 0.5, 1.0
+#define VERMELHO 1.65, 0.0, 0.0, 1.0
 #define VERDE  0.0, 0.5, 0.0, 1.0
 #define CINZA    0.5,0.5, 0.5, 1.0
 
-#define PASSO 1.5
+#define PASSO 1.65
 
-GLfloat ro,go,bo; //RGB do quadrado
-GLfloat rl,gl,bl; //RGB das paredes do labirinto
+GLfloat ro,go,bo; //RGB DO QUADRADRO
+GLfloat rl,gl,bl; //RGB DAS PAREDES DO LABIRINTO
 
 int max_verticais = 14;
 int max_horizontais = 18;
 
-int auxcolor;
 int vidas = 3;
-int cont =0;
+int cont =0;            //VARIAVEL USADA PARA CONTROLAR A MUDANÇA DE COR DO FUNDO DO LABIRINTO
+char winLose[15] = " "; //MENSAGEM DE VITORIA/DERROTA
 
-//PAREDES DO LABIRINTO
-
+//POSIÇÕES DAS PAREDES DO LABIRINTO
 int linhas_verticais[14][3] = { {0,34,138},{0,0,17},{18,17,68},{34,85,119},{34,0,17},
                                 {51,102,138},{51,68,85},{68,34,68},{85,17,51},{102,51,119},
                                 {119,68,85},{119,34,51},{138,0,102},{138,119,138}
@@ -43,9 +42,9 @@ int linhas_horizontais[18][3] = {   {0,0,138},{17,102,138},{17,51,85},{34,0,17},
                                     {102,0,17},{102,51,85},{102,119,138},{119,0,34},{119,68,138},{138,0,138}
                                 };
 
-//DESENHO DA FIGURA
-float quad[4][2] = {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
-float quadAux[4][2] = {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
+//POSIÇÃO INICIAL DO QUADRADO
+float quad[4][2]    =  {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
+float quadAux[4][2] =  {{2.5,19.5},{12.5,19.5},{12.5,29.5},{2.5, 29.5}};
 
 void Inicializa(void);
 void Desenha(void);
@@ -53,6 +52,7 @@ bool colisaoVertical(void);
 bool colisaoHorizontal(void);
 void TecladoEspecial(int , int , int );
 void Mouse(int , int ,int , int );
+void DesenhaTexto(char *);
 
 int main(int argc, char *argv[]){
 
@@ -79,7 +79,9 @@ void Inicializa (void){
 
 void Desenha(void){
     glClear(GL_COLOR_BUFFER_BIT);
-    glLineWidth(5);
+
+    //DESENHA AS PAREDES DO LABIRINTO
+    glLineWidth(7);
     glColor3f(rl,gl,bl);
     for(int i = 0; i < max_verticais; i++){
              glBegin(GL_LINES);
@@ -93,6 +95,7 @@ void Desenha(void){
                 glVertex2i(linhas_horizontais[i][2],linhas_horizontais[i][0]);
              glEnd();
     }
+    //DESENHA UM QUADRADO DENTRO DO LABIRINTO
     glColor3f(ro, go, bo);
     glBegin(GL_QUADS);
         glVertex2f(quad[0][0],quad[0][1]);
@@ -100,6 +103,11 @@ void Desenha(void){
         glVertex2f(quad[2][0],quad[2][1]);
         glVertex2f(quad[3][0],quad[3][1]);
     glEnd();
+
+    // INSERE STRING VAZIA NO CANTO SUPERIOR DIREITO DO LABIRINTO
+     glColor3f(0.0f,0.0f,0.0f);
+     DesenhaTexto(winLose);
+     glutSwapBuffers();
 
     glFlush();
 }
@@ -131,6 +139,7 @@ bool colisaoHorizontal(void){
 void TecladoEspecial(int key, int x, int y){
     switch(key){
         case GLUT_KEY_UP:
+            strcpy(winLose, " ");
             for(int i= 0; i < 4; i++)
                 quad[i][1]+=PASSO;
             if(colisaoHorizontal()){
@@ -141,6 +150,7 @@ void TecladoEspecial(int key, int x, int y){
             }
         break;
         case GLUT_KEY_DOWN:
+            strcpy(winLose, " ");
             for(int i= 0; i < 4; i++)
                 quad[i][1]-=PASSO;
             if(colisaoHorizontal()){
@@ -151,6 +161,7 @@ void TecladoEspecial(int key, int x, int y){
             }
         break;
         case GLUT_KEY_LEFT:
+            strcpy(winLose, " ");
             for(int i= 0; i < 4; i++)
                 quad[i][0]-=PASSO;
             if(colisaoVertical()){
@@ -161,6 +172,7 @@ void TecladoEspecial(int key, int x, int y){
             }
         break;
         case GLUT_KEY_RIGHT:
+            strcpy(winLose, " ");
             for(int i= 0; i < 4; i++)
                 quad[i][0]+=PASSO;
             if(colisaoVertical()){
@@ -170,15 +182,16 @@ void TecladoEspecial(int key, int x, int y){
                     quad[i][j] = quadAux[i][j];
             }
         break;
+
     }
     if(vidas <= 0){
-        printf("Voce Perdeu!\n!");
+        //printf("Voce Perdeu!\n!");
+        strcpy(winLose, "Voce Perdeu!");
         vidas=3;
-
     } else
         if(quad[1][1] > 102 && quad[2][1] < 119 && quad[1][0] > 138){
-            printf("Voce Ganhou!!\n");
-            vidas+=1;
+            //printf("Voce Ganhou!!\n");
+            strcpy(winLose, "Voce Venceu!");
             for(int i=0;i < 4;i++)
                     for(int j=0; j < 2; j++)
                     quad[i][j] = quadAux[i][j];
@@ -232,4 +245,14 @@ void Mouse(int button, int state,int x, int y){
             glutPostRedisplay();
         }
     }
+}
+
+void DesenhaTexto(char *string){
+  	glPushMatrix();
+        // Posição no universo onde o texto será colocado
+        glRasterPos2f(70,125);
+        // Exibe caracter a caracter
+        while(*string)
+             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*string++);
+	glPopMatrix();
 }
