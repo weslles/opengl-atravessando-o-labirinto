@@ -1,10 +1,10 @@
 /**
     UNIVERSIDADE FEDERAL DO VALE DO SAO FRANCISCO
     DISCIPLINA: COMPUTACAOO GRAFICA  TURMA: 2020.2
-    PROFESSOR: JORGE CAVALCANTE
-    ALUNOS: JOSE WESLLES
-            MATHEUS ADHONNAY
-            RAYANNE CAROLINE
+    PROFESSOR:  JORGE CAVALCANTE
+    ALUNOS:     JOSE WESLLES
+                MATHEUS ADHONNAY
+                RAYANNE CAROLINE
 */
 
 #include <stdlib.h>
@@ -19,7 +19,8 @@
 #define VERDE  0.0, 0.5, 0.0, 1.0
 #define CINZA    0.5,0.5, 0.5, 1.0
 
-#define PASSO 1.65
+#define PASSO 2     //MOSTRA O QUANTO O QUADRADO SE MOVIMENTA NO PLANO CARTESIANO
+#define ESPESSURA 3 //ESPESSURA DA PAREDE DO LABIRINTO
 
 GLfloat ro,go,bo; //RGB DO QUADRADRO
 GLfloat rl,gl,bl; //RGB DAS PAREDES DO LABIRINTO
@@ -37,8 +38,8 @@ int linhas_verticais[14][3] = { {0,34,138},{0,0,17},{18,17,68},{34,85,119},{34,0
                                 {119,68,85},{119,34,51},{138,0,102},{138,119,138}
                                };
 
-int linhas_horizontais[18][3] = {   {0,0,138},{17,102,138},{17,51,85},{34,0,17},{34,34,68},{34,85,102},
-                                    {51,17,51},{51,102,119},{68,34,85},{68,102,119},{85,17,34},{85,68,102},
+int linhas_horizontais[18][3] = {   {0,0,138},{17,102,138},{17,51,85},{34,0,18},{34,34,68},{34,85,102},
+                                    {51,18,51},{51,102,119},{68,34,85},{68,102,119},{85,17,34},{85,68,102},
                                     {102,0,17},{102,51,85},{102,119,138},{119,0,34},{119,68,138},{138,0,138}
                                 };
 
@@ -50,6 +51,7 @@ void Inicializa(void);
 void Desenha(void);
 bool colisaoVertical(void);
 bool colisaoHorizontal(void);
+void teclado(unsigned char , int , int );
 void TecladoEspecial(int , int , int );
 void Mouse(int , int ,int , int );
 void DesenhaTexto(char *);
@@ -62,6 +64,7 @@ int main(int argc, char *argv[]){
     glutInitWindowSize(400,400);
     glutCreateWindow("Atravessando o Labirinto");
     glutDisplayFunc(Desenha);
+    glutKeyboardFunc(teclado);
     glutSpecialFunc(TecladoEspecial);
     glutMouseFunc(Mouse);
     Inicializa();
@@ -81,7 +84,7 @@ void Desenha(void){
     glClear(GL_COLOR_BUFFER_BIT);
 
     //DESENHA AS PAREDES DO LABIRINTO
-    glLineWidth(7);
+    glLineWidth(ESPESSURA);
     glColor3f(rl,gl,bl);
     for(int i = 0; i < max_verticais; i++){
              glBegin(GL_LINES);
@@ -134,6 +137,18 @@ bool colisaoHorizontal(void){
             }
         }
         return false;
+}
+
+void teclado(unsigned char key, int x, int y){
+    switch (key) {
+            case 27:
+                printf("\n-----------------------\n");
+                printf("SENTIREMOS SUA FALTA!!");
+                printf("\n-----------------------\n");
+                exit(0);
+                break;
+    }
+    glutPostRedisplay();
 }
 
 void TecladoEspecial(int key, int x, int y){
