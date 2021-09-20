@@ -17,7 +17,7 @@
 
 ## LABIRINTO
 
-![alt text](https://github.com/weslles/atravessando-o-labirinto-opengl/blob/master/labirintoDesenhado.png)
+![alt text](https://github.com/weslles/opengl-atravessando-o-labirinto/blob/main/labirintoDesenhado.png)
 
 
 ## DESCRIÇÃO DA ATIVIDADE
