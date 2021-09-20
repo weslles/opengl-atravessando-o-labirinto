@@ -15,7 +15,6 @@
 
 3. PRESSIONE A TECLA 'ESC' PARA SAIR A QUALQUER MOMENTO
 
-<<<<<<< HEAD
 ## LABIRINTO
 
 ![alt text](https://github.com/weslles/atravessando-o-labirinto-opengl/blob/master/labirintoDesenhado.png)
@@ -24,7 +23,6 @@
 ## DESCRIÇÃO DA ATIVIDADE
 =======
 ### DESCRIÇÃO DA ATIVIDADE
->>>>>>> 556acf5568e4558900c6b704c025c5e7b8fe5187
 
  Crie uma aplicação OpenGL para o Jogo “Atravessando o Labirinto”,
 conforme ilustração a seguir:
