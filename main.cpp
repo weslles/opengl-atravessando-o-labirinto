@@ -19,7 +19,7 @@
 #define VERDE  0.0, 0.5, 0.0, 1.0
 #define CINZA    0.5,0.5, 0.5, 1.0
 
-#define PASSO 2     //MOSTRA O QUANTO O QUADRADO SE MOVIMENTA NO PLANO CARTESIANO
+#define PASSO 0.5     //MOSTRA O QUANTO O QUADRADO SE MOVIMENTA NO PLANO CARTESIANO
 #define ESPESSURA 3 //ESPESSURA DA PAREDE DO LABIRINTO
 
 GLfloat ro,go,bo; //RGB DO QUADRADRO
@@ -31,6 +31,7 @@ int max_horizontais = 18;
 int vidas = 3;
 int cont =0;            //VARIAVEL USADA PARA CONTROLAR A MUDANÇA DE COR DO FUNDO DO LABIRINTO
 char winLose[15] = " "; //MENSAGEM DE VITORIA/DERROTA
+
 
 //POSIÇÕES DAS PAREDES DO LABIRINTO
 int linhas_verticais[14][3] = { {0,34,138},{0,0,17},{18,17,68},{34,85,119},{34,0,17},
@@ -72,6 +73,10 @@ int main(int argc, char *argv[]){
 }
 
 void Inicializa (void){
+    printf("\n-----------------------\n");
+    printf("BEM VINDO AO LABIRINTO!!");
+    printf("\n-----------------------\n");
+    printf("Voce comeca com %d vidas.\n", vidas);
     glClearColor(CINZA);
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0,138,0,138);
@@ -101,10 +106,10 @@ void Desenha(void){
     //DESENHA UM QUADRADO DENTRO DO LABIRINTO
     glColor3f(ro, go, bo);
     glBegin(GL_QUADS);
-        glVertex2f(quad[0][0],quad[0][1]);
-        glVertex2f(quad[1][0],quad[1][1]);
-        glVertex2f(quad[2][0],quad[2][1]);
-        glVertex2f(quad[3][0],quad[3][1]);
+        glVertex2f(quad[0][0],quad[0][1]); // A(2,19)
+        glVertex2f(quad[1][0],quad[1][1]); // B(12,19)
+        glVertex2f(quad[2][0],quad[2][1]); // C(12,29)
+        glVertex2f(quad[3][0],quad[3][1]); // D(2,29)
     glEnd();
 
     // INSERE STRING VAZIA NO CANTO SUPERIOR DIREITO DO LABIRINTO
@@ -117,10 +122,11 @@ void Desenha(void){
 
 bool colisaoVertical(void){
         for(int i = 0; i < max_verticais; i++){
+
             if( (linhas_verticais[i][0] >= quad[0][0] && linhas_verticais[i][0] <= quad[1][0]) &&
                 (quad[1][1] >= linhas_verticais[i][1] && quad[2][1] <= linhas_verticais[i][2])
                ) {
-                printf("vidas = %d\n", vidas-1);
+                printf("Vidas restantes: %d\n", vidas-1);
                 return true;
             }
         }
@@ -132,7 +138,7 @@ bool colisaoHorizontal(void){
             if( (linhas_horizontais[i][0] >= quad[1][1] && linhas_horizontais[i][0] <= quad[2][1]) &&
                 (quad[0][0] >= linhas_horizontais[i][1] && quad[1][0] <= linhas_horizontais[i][2])
                ){
-                printf("vidas = %d\n", vidas-1);
+                printf("Vidas restantes: %d\n", vidas-1);
                 return true;
             }
         }
@@ -142,6 +148,7 @@ bool colisaoHorizontal(void){
 void teclado(unsigned char key, int x, int y){
     switch (key) {
             case 27:
+                system("cls");
                 printf("\n-----------------------\n");
                 printf("SENTIREMOS SUA FALTA!!");
                 printf("\n-----------------------\n");
@@ -163,12 +170,24 @@ void TecladoEspecial(int key, int x, int y){
                     for(int j=0; j < 2; j++)
                     quad[i][j] = quadAux[i][j];
             }
+            if(colisaoVertical()){
+                vidas--;
+                for(int i=0;i < 4;i++)
+                    for(int j=0; j < 2; j++)
+                    quad[i][j] = quadAux[i][j];
+            }
         break;
         case GLUT_KEY_DOWN:
             strcpy(winLose, " ");
             for(int i= 0; i < 4; i++)
                 quad[i][1]-=PASSO;
             if(colisaoHorizontal()){
+                vidas--;
+                for(int i=0;i < 4;i++)
+                    for(int j=0; j < 2; j++)
+                    quad[i][j] = quadAux[i][j];
+            }
+            if(colisaoVertical()){
                 vidas--;
                 for(int i=0;i < 4;i++)
                     for(int j=0; j < 2; j++)
@@ -185,6 +204,12 @@ void TecladoEspecial(int key, int x, int y){
                     for(int j=0; j < 2; j++)
                     quad[i][j] = quadAux[i][j];
             }
+            if(colisaoHorizontal()){
+                vidas--;
+                for(int i=0;i < 4;i++)
+                    for(int j=0; j < 2; j++)
+                    quad[i][j] = quadAux[i][j];
+            }
         break;
         case GLUT_KEY_RIGHT:
             strcpy(winLose, " ");
@@ -196,13 +221,23 @@ void TecladoEspecial(int key, int x, int y){
                     for(int j=0; j < 2; j++)
                     quad[i][j] = quadAux[i][j];
             }
+            if(colisaoHorizontal()){
+                vidas--;
+                for(int i=0;i < 4;i++)
+                    for(int j=0; j < 2; j++)
+                    quad[i][j] = quadAux[i][j];
+            }
         break;
 
     }
     if(vidas <= 0){
         //printf("Voce Perdeu!\n!");
         strcpy(winLose, "Voce Perdeu!");
+        system("cls");
+        printf("\nTENTE NOVAMENTE!\n------------------------------\n");
+
         vidas=3;
+        printf("Vidas restantes: %d\n", vidas);
     } else
         if(quad[1][1] > 102 && quad[2][1] < 119 && quad[1][0] > 138){
             //printf("Voce Ganhou!!\n");
